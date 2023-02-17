@@ -16,7 +16,7 @@ Each person will modify their partner's repo and submit the changes as a pull re
 
     You'll notice that GitHub doesn't let you fork this repo:
     you've already forked my repo, and GitHub doesn't let you have multiple forks of the same repo.
-    To work around this problem, you will have to
+    To work around this problem, you will have to:
 
     1. Create a duplicate copy of your own lab-timeit repo that is not a fork of my repo.
         Follow the instructions at <https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository>.
@@ -36,7 +36,7 @@ Each person will modify their partner's repo and submit the changes as a pull re
 
 ## Part II
 
-(You no longer need a partner.)
+(You no longer need a partner, but you're encouraged to keep working together.)
 
 For the second part of this lab, you will measure the runtime performance of the sequential and binary search algorithms in the `notes.py` file.
 There will be two tables to complete.
@@ -52,9 +52,20 @@ In this assignment we will see just how much better the logarithmic runtime is t
 The following terminal command measures the runtime of the `binary_search_itr` function from the `notes.py` file on a list of length `n=65536`:
 ```
 $ python3 -m timeit \
-    -s 'import notes; n = 65536; xs = list(range(-n,n))' \
+    'import notes; n = 65536; xs = list(range(-n,n))' \
     'notes.binary_search_itr(xs,5)'
 ```
+
+> **NOTE:**
+> The backslash `\` in the command above signifies that the command continues onto the next line.
+> Recall that the `\` is used to "escape" characters to change their meaning.
+> In this case, the character that follows the `\` is a newline character (rendered as `\n` in python),
+> and the `\` above signifies that the newline character should be interpreted as ordinary whitespace and not the end of a command.
+> Therefore, the command above is functionally equivalent to
+> ```
+> $ python3 -m timeit -s 'import notes; n = 65536; xs = list(range(-n,n))' 'notes.binary_search_rec(xs,5)'
+> ```
+> But the first command is easier to read.
 
 For each cell in the table below:
 Modify the command above for the corresponding search function and value of `n`;
@@ -85,31 +96,36 @@ measure the runtime and enter it into the table.
 | `n=2**20`      |                           |                       |
 | `n=2**21`      |                           |                       |
 | `n=2**22`      |                           |                       |
-| `n=2**23`      |                           |                       |
-| `n=2**24`      |                           |                       |
 
 > **HINT:**
 > You don't have to run all of these tests manually.
 > The bash shell has a built-in for loop feature that you can use.
 > To see how this feature works, run the command
 > ```
-> $ for i in $(seq 0 24); do
-> >     echo "i=$i"
-> > done
+> $ for i in $(seq 0 22); do
+>     echo "i=$i"
+> done
 > ```
-> Notice that the `$i` gets substituted with each value between 0 and 24
-> (and differently than python, the last value in the range is included).
+> Notice:
+> 1. When you enter a multiline command in bash, your prompt will probably change to `>`.
+>       It is traditional not to display this "multiline prompt" when writing commands.
+> 1. The `$i` gets substituted with each value between 0 and 22.
+>       This is different than python, where the last value in the range is included).
+> 
 > We can put the timeit command inside of this for loop as well to run all of the appropriate timeit calls.
 > The final command will look something like:
 > ```
-> $ for i in $(seq 0 24); do
-> >     echo "i=$i"
-> >     python3 -m timeit "import notes; n = 2**$i; xs = list(range(-n,n))" "notes.binary_search_itr(xs,5)"
-> > done
+> $ for i in $(seq 0 22); do
+>     echo "i=$i"
+>     python3 -m timeit \
+>         -s "import notes; n = 2**$i; xs = list(range(-n,n))" \
+>         "notes.binary_search_rec(xs,5)"
+> done
 > ```
+> But you'll have to modify it for the other table column.
 
-In my experiments:
-1. I get that binary search with `n=2**24` is faster than sequential search with `n=2**5`.
+You should observe that:
+1. Binary search is much faster for large $n$, but for small $n$ sequential search may be faster.
 1. Multiplying `n` times 2 gives a *multiplicative* slowdown for sequential search (by a factor of 2),
   but an additive slowdown for binary search.
 
