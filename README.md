@@ -254,6 +254,9 @@ We will prove all of these statements formally next week in class by showing tha
 | `binary_search_rec`        | O(log n) | O(log n)| O(log n)    | O(n)          |
 | `binary_search_rec2`       | O(log n) | O(n)    | O(n)        | ---           |
 
+> **HINT:**
+> You'll notice that the `binary_search_rec` function has the best runtimes overall.
+> This is the function you should use as the basis for your homework problems.
 
 ## Submission
 
