@@ -123,8 +123,6 @@ def binary_search_itr(xs, y):
     else:
         return False
 
-    return go(0, len(xs) - 1)
-
 
 def binary_search_rec(xs, y):
     '''
