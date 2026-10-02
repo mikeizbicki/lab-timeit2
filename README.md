@@ -2,7 +2,7 @@
 
 In this lab you will measure the runtime of the sequential and binary search algorithms in the `notes.py` file.
 The main takeaway from this assignment is that:
-binary search has a runtime of $O(\log n)$, and this is *very* fast.
+binary search has a runtime of $O(\log n)$, which is *very* fast.
 It scales to internet-sized datasets.
 
 <img src=img/logn.png width=200px />
