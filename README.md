@@ -1,12 +1,15 @@
 # Lab: timeit (Part 2)
 
 In this lab you will measure the runtime of the sequential and binary search algorithms in the `notes.py` file.
+You will also practice a bit more git and learn how to plot and view graphs on the lambda server.
 
-There will be two tables to complete.
+The assignment will have you editing this repo at various points.
 Fork this repo, and make all changes in your own forked repo.
-When done, ensure that you push the changes back onto github.
 
-### Runtime vs N
+You are not required to work with a partner on this lab,
+but you are encouraged to do so.
+
+## Part 1: Runtime vs N
 
 Recall that sequential search has a worst case runtime of $\Theta(n)$ and binary search has a worst case runtime of $\Theta(\log n)$.
 We will prove these facts in class next week.
@@ -15,7 +18,7 @@ In this assignment we will see just how much better the logarithmic runtime is t
 The following terminal command measures the runtime of the `binary_search_itr` function from the `notes.py` file on a list of length `n=65536`:
 ```
 $ python3 -m timeit \
-    -s 'import notes; n = 65536; xs = list(range(n))' \
+    -s 'import notes; n = 65536; xs = list(range(-n,n))' \
     'notes.binary_search_itr(xs,5)'
 ```
 
@@ -26,7 +29,7 @@ $ python3 -m timeit \
 > and the `\` above signifies that the newline character should be interpreted as ordinary whitespace and not the end of a command.
 > Therefore, the command above is functionally equivalent to
 > ```
-> $ python3 -m timeit -s 'import notes; n = 65536; xs = list(range(n))' 'notes.binary_search_itr(xs,5)'
+> $ python3 -m timeit -s 'import notes; n = 65536; xs = list(range(-n,n))' 'notes.binary_search_itr(xs,5)'
 > ```
 > But the first command is easier to read.
 
@@ -109,7 +112,7 @@ Solution:
 $ for i in $(seq 0 22); do
     echo "i=$i"
     python3 -m timeit \
-        -s "import notes; n = 2**$i; xs = list(range(0,n))" \
+        -s "import notes; n = 2**$i; xs = list(range(-n,n))" \
         "notes.binary_search_rec(xs,5)"
 done
 ```
@@ -126,7 +129,72 @@ At [FAANG](https://en.wikipedia.org/wiki/Big_Tech#FAANG)-type companies,
 they are searching through datasets of size `n>1000000000000000` (15+ zeros).
 It should hopefully be clear from these examples that the logarithmic runtime is absolutely essential for any realtime queries of datasets of this size.
 
-### Measuring combinations of data structure / implementation
+## Part 2: Plotting the results
+
+It is hard to visualize raw table outputs like you have above.
+So in this section we will plot them visually.
+We'll start with some example data just to practice the mechanics,
+then you'll plot the real data by yourself.
+
+### Part 2a: example data
+
+First, we will practice generating plots and viewing them on a remote server.
+The file `example.csv` contains some example data that we will plot, and `plot.py` contains code for plotting it.
+Quickly skim these files:
+```
+$ cat example.csv
+$ cat plot.py
+```
+
+Observe that there are no png files in your folder:
+```
+$ ls
+```
+Then run the plot command and observe that it creates a png file:
+```
+$ python3 plot.py example.csv
+$ ls
+```
+
+Now the question is, how do you view the file?
+The terminal only supports text, and so there is no direct way to do it in the terminal.
+There are many workarounds to this problem that people have developed,
+but the simplest for our purposes is to just upload to github.
+
+Observe that the image below has a broken link:
+
+<img src=first_example.png width=400px>
+
+Also observe that it is looking for a file named `first_example.png`
+(you'll have to look at the markdown source, find the `img` html tag and the `src` attribute).
+This file does not exist, and that's why github renders it as a broken image.
+
+We will use the `img` tag above to view our `example.csv` data.
+First rename the png file that `plot.py` created to `first_example.png` using the `mv` command.
+Then add/commit/push the changes to github.
+You should be able to refresh this page and see the image displayed above.
+
+### Part 2b: real data
+
+Now that you know how to create and view plots,
+you are ready to visualize your own runtimes.
+The runtimes will display in the image below once you complete the necessary steps:
+
+<img src=runtimes.png width=400px>
+
+The steps are:
+
+1. Create a file `myruntimes.csv` that contains the contents of your markdown table from Part 1.
+
+2. Call `plot.py` on this new data.
+
+3. `mv` the created png to the right location, and add/commit/push to github.
+
+The plot above is a log-log plot, so interpreting it requires some practice.
+But the plot should make it obvious that `binary_search_rec` is much faster than 
+`sequential_search_itr` as $n$ gets large.
+
+## Part 3: Measuring combinations of data structure / implementation
 
 We will now compare the runtime of binary search on four of python's container types: list, deque, tuple, and array.
 
@@ -161,8 +229,8 @@ array([1, 2, 3, 4, 5])
 
 > **NOTE:**
 > numpy is not built-in to python and needs to be pip installed.
-> But it is also a large package that takes up >100mb,
-> and so you cannot install it into your venvs.
+> But it is also a large package that takes up >100mb.
+> So on the lambda server, if you try to install it, you will get an error about running out of disk space because your accounts only have 100mb allocated to them.
 > Fortunately, it is pre-installed on the lambda server global environment.
 > Therefore, you must not have an active venv for numpy to work.
 > If you currently are inside a venv, you can run `deactivate` to leave.
@@ -217,22 +285,23 @@ array([ 1,  2,  3, -1, -2])
 The following terminal command measures the runtime of the `binary_search_itr` command from the `notes.py` file on an array of length `n=65536`:
 ```
 $ python3 -m timeit \
-    -s 'import notes; import numpy; n = 65536; xs = numpy.array(range(0,n))' \
+    -s 'import notes; import numpy; n = 65536; xs = numpy.array(range(-n,n))' \
     'notes.binary_search_itr(xs,5)'
 ```
 
 For each cell in the table below:
 Modify the command above for the corresponding search function and container type;
 measure the runtime and enter it into the table.
+If you get a stack overflow, then put `---` in the table.
 
 |                            | `array`  | `list`  | `tuple`     | `deque`       |
 | -------------------------- | ---------| --------|------------ | ------------- |
 | `sequential_search_itr`    |          |         |             |               |
 | `sequential_search_itr2`   |          |         |             |               |
-| `sequential_search_rec`    |  ---     | ---     |  ---        |  ---          |
+| `sequential_search_rec`    |          |         |             |               |
 | `binary_search_itr`        |          |         |             |               |
 | `binary_search_rec`        |          |         |             |               |
-| `binary_search_rec2`       |          |         |             |  ---          |
+| `binary_search_rec2`       |          |         |             |               |
 
 You should notice that:
 1. for the `array` container, all implementations of binary search work well
