@@ -1,44 +1,7 @@
 # Lab: timeit (Part 2)
 
-## Part I - Completing last week's lab
+In this lab you will measure the runtime of the sequential and binary search algorithms in the `notes.py` file.
 
-<!--
-For the first part of this lab, you will work with a partner.
-You will modify last week's lab repo to include the big-O notation table that was commented out.
-Each person will modify their partner's repo and submit the changes as a pull request.
--->
-
-1. Find a partner.
-
-1. Try to fork your partner's repo from last week.
-    (Recall that this repo was forked from my upstream repo <https://github.com/mikeizbicki/lab-timeit>,
-    and so the url will look the same just with their username.)
-
-    You'll notice that GitHub doesn't let you fork this repo:
-    you've already forked my repo, and GitHub doesn't let you have multiple forks of the same repo.
-    To work around this problem, you will have to:
-
-    1. Create a duplicate copy of your own lab-timeit repo that is not a fork of my repo.
-        Follow the instructions at <https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository>.
-        It does not matter what you name your duplicate repo.
-
-    1. Once your partner has their duplicate repo created, fork it.
-
-1. Clone the newly created fork onto the lambda server.
-
-1. Edit the `README.md` file to:
-    
-    1. Remove the comments around the big-O notation table.
-    1. Fill in the correct runtimes in each box of the table using big-O notation.
-
-1. Submit a pull request to your partner's repo,
-   and accept the pull request that your partner submits to your repo.
-
-## Part II
-
-(You no longer need a partner, but you're encouraged to keep working together.)
-
-For the second part of this lab, you will measure the runtime performance of the sequential and binary search algorithms in the `notes.py` file.
 There will be two tables to complete.
 Fork this repo, and make all changes in your own forked repo.
 When done, ensure that you push the changes back onto github.
@@ -52,7 +15,7 @@ In this assignment we will see just how much better the logarithmic runtime is t
 The following terminal command measures the runtime of the `binary_search_itr` function from the `notes.py` file on a list of length `n=65536`:
 ```
 $ python3 -m timeit \
-    'import notes; n = 65536; xs = list(range(-n,n))' \
+    -s 'import notes; n = 65536; xs = list(range(n))' \
     'notes.binary_search_itr(xs,5)'
 ```
 
@@ -63,13 +26,14 @@ $ python3 -m timeit \
 > and the `\` above signifies that the newline character should be interpreted as ordinary whitespace and not the end of a command.
 > Therefore, the command above is functionally equivalent to
 > ```
-> $ python3 -m timeit -s 'import notes; n = 65536; xs = list(range(-n,n))' 'notes.binary_search_rec(xs,5)'
+> $ python3 -m timeit -s 'import notes; n = 65536; xs = list(range(n))' 'notes.binary_search_itr(xs,5)'
 > ```
 > But the first command is easier to read.
 
 For each cell in the table below:
 Modify the command above for the corresponding search function and value of `n`;
 measure the runtime and enter it into the table.
+(See the hint below the table before doing it all manually.)
 
 |                | `sequential_search_itr`   | `binary_search_rec`   |
 | -------------- | ------------------------- | --------------------- | 
@@ -102,27 +66,54 @@ measure the runtime and enter it into the table.
 > The bash shell has a built-in for loop feature that you can use.
 > To see how this feature works, run the command
 > ```
-> $ for i in $(seq 0 22); do
+> $ for i in 1 2 3 4 5; do
 >     echo "i=$i"
 > done
 > ```
 > Notice:
 > 1. When you enter a multiline command in bash, your prompt will probably change to `>`.
 >       It is traditional not to display this "multiline prompt" when writing commands.
-> 1. The `$i` gets substituted with each value between 0 and 22.
->       This is different than python, where the last value in the range is included).
-> 
-> We can put the timeit command inside of this for loop as well to run all of the appropriate timeit calls.
-> The final command will look something like:
+> 1. The `$i` gets substituted with each value 1 2 3 4 5.
+>
+> Obviously, typing out all the numbers from 0 to 22 is a pain and not something us error-prone humans should be doing.
+> Fortunately, the shell has a command `seq` that works like python's `range`.
+> Try running
+> ```
+> $ seq 0 22
+> ```
+> and observe that this prints all the numbers from 0 to 22 inclusive.
+> (`seq` behaves differently than python's `range` this way.)
+>
+> We loop over the results of `seq` using the *command substitution* syntax `$( ... )`.
+> This syntax takes the output of whatever command is within the parenthesis and "pastes" it wherever the parentheses are.
+> So if we modify the for loop to
 > ```
 > $ for i in $(seq 0 22); do
 >     echo "i=$i"
->     python3 -m timeit \
->         -s "import notes; n = 2**$i; xs = list(range(-n,n))" \
->         "notes.binary_search_rec(xs,5)"
 > done
 > ```
-> But you'll have to modify it for the other table column.
+> we will loop over all the numbers we need for the table.
+>
+> Finally, you can automate your table generation procedure by putting the python time it command within the loop.
+> We can put the timeit command inside of this for loop as well to run all of the appropriate timeit calls.
+>
+> **Exercise:**
+> Combine the for loop and timeit commands into a single command.
+> You will still want to echo the value of `$i`,
+> just add the timeit command below the echo.
+> You should modify the `python3 -m timeit ...` code above so that the section `n = 65536` is replaced by `n = 2**$i`.
+
+<!--
+Solution:
+```
+$ for i in $(seq 0 22); do
+    echo "i=$i"
+    python3 -m timeit \
+        -s "import notes; n = 2**$i; xs = list(range(0,n))" \
+        "notes.binary_search_rec(xs,5)"
+done
+```
+-->
 
 You should observe that:
 1. Binary search is much faster for large $n$, but for small $n$ sequential search may be faster.
@@ -157,7 +148,7 @@ and are therefore slightly more efficient.
 
 The array type is likely one that you haven't seen before,
 since it is not usually introduced in intro programming courses.
-The array type is included in the numpy library.
+The array type is included in the numpy library for scientific computing.
 You create an array by first importing the library,
 and then calling the `array` constructor on an iterable (i.e. list-like container):
 ```
@@ -167,6 +158,15 @@ array([1, 2, 3, 4, 5])
 >>> numpy.array(range(1,6))
 array([1, 2, 3, 4, 5])
 ```
+
+> **NOTE:**
+> numpy is not built-in to python and needs to be pip installed.
+> But it is also a large package that takes up >100mb,
+> and so you cannot install it into your venvs.
+> Fortunately, it is pre-installed on the lambda server global environment.
+> Therefore, you must not have an active venv for numpy to work.
+> If you currently are inside a venv, you can run `deactivate` to leave.
+
 The array supports a very similar interface as a list.
 For example, you can index and slice just like in a list:
 ```
@@ -187,7 +187,7 @@ Lists use "container algebra" operations:
 ```
 and arrays use "vector algebra" operations:
 ```
->>> numpy.array([1, 2]) + np.array([3, 4])
+>>> numpy.array([1, 2]) + numpy.array([3, 4])
 array([4, 6])
 >>> numpy.array([1, 2]) * 2
 array([2, 4])
@@ -217,7 +217,7 @@ array([ 1,  2,  3, -1, -2])
 The following terminal command measures the runtime of the `binary_search_itr` command from the `notes.py` file on an array of length `n=65536`:
 ```
 $ python3 -m timeit \
-    -s 'import notes; import numpy; n = 65536; xs = numpy.array(range(-n,n))' \
+    -s 'import notes; import numpy; n = 65536; xs = numpy.array(range(0,n))' \
     'notes.binary_search_itr(xs,5)'
 ```
 
@@ -254,10 +254,6 @@ We will prove all of these statements formally next week in class by showing tha
 | `binary_search_rec`        | O(log n) | O(log n)| O(log n)    | O(n)          |
 | `binary_search_rec2`       | O(log n) | O(n)    | O(n)        | ---           |
 
-> **HINT:**
-> You'll notice that the `binary_search_rec` function has the best runtimes overall.
-> This is the function you should use as the basis for your homework problems.
-
 ## Submission
 
-Submit the url to your new lab-timeit repo and your forked version of this repo to canvas.
+Submit the url to your repo to canvas.
