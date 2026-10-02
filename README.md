@@ -187,10 +187,10 @@ Lists use "container algebra" operations:
 ```
 and arrays use "vector algebra" operations:
 ```
->>> [1, 2] + [3, 4]
-[4, 6]
->>> [1, 2]*2
-[2, 4]
+>>> numpy.array([1, 2]) + np.array([3, 4])
+array([4, 6])
+>>> numpy.array([1, 2]) * 2
+array([2, 4])
 ```
 In this problem, the important difference will be that:
 1. list slices make a copy and take time O(k), where k is the size of the slice;
@@ -260,4 +260,4 @@ We will prove all of these statements formally next week in class by showing tha
 
 ## Submission
 
-Submit the url to your new lab-timeit repo and your forked version of this repo to sakai.
+Submit the url to your new lab-timeit repo and your forked version of this repo to canvas.
