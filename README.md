@@ -7,7 +7,8 @@ It scales to internet-sized datasets.
 
 <img src=img/logn.png width=200px />
 
-You will also practice a bit more git and learn how to plot and view graphs on the lambda server.
+You will also learn a few more tricks for working in the terminal,
+like how to plot and view graphs on the lambda server.
 The assignment will have you editing this repo at various points.
 Fork this repo, and make all changes in your own forked repo.
 
