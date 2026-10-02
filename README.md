@@ -1,8 +1,13 @@
 # Lab: timeit (Part 2)
 
 In this lab you will measure the runtime of the sequential and binary search algorithms in the `notes.py` file.
-You will also practice a bit more git and learn how to plot and view graphs on the lambda server.
+The main takeaway from this assignment is that:
+binary search has a runtime of $O(\log n)$, and this is *very* fast.
+It scales to internet-sized datasets.
 
+<img src=img/logn.png width=400px />
+
+You will also practice a bit more git and learn how to plot and view graphs on the lambda server.
 The assignment will have you editing this repo at various points.
 Fork this repo, and make all changes in your own forked repo.
 
